@@ -1,0 +1,15 @@
+## YAML template
+#spring:
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: config-server
+#      fail-fast: true
+#      name: config-client
+#      profile: development
+#      username: admin
+#      password: qwerty
+#      retry:
+#        max-attempts: 1
+#        max-interval: 3000
