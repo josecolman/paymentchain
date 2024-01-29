@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -36,11 +37,12 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     //import org.springframework.web.reactive.function.client.WebClient;
     //@LoadBalanced
-    private final WebClient.Builder webClientBuilder;
+   // private final WebClient.Builder webClientBuilder;
 
     private final IProductService productService;
+    private final TransactionService transactionService;
 
-    HttpClient httpClient = HttpClient.create()
+    /*HttpClient httpClient = HttpClient.create()
             //.wiretap(true)
             //.compress(true)
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
@@ -51,34 +53,10 @@ public class CustomerService {
             .doOnConnected(connection -> {
                 connection.addHandlerFirst(new ReadTimeoutHandler(10, TimeUnit. SECONDS));
                 connection.addHandlerLast(new WriteTimeoutHandler(10, TimeUnit. SECONDS));
-            });
+            });*/
 
 
 
-    public List<?> getTransactionsByCustomerIBAN(String iban) {
-
-        String baseUrl = "http://transaction-service/api/v1/transaction";
-
-        baseUrl = "http://localhost:8997/api/v1/transaction";
-
-        WebClient webClient = webClientBuilder
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                //.defaultUriVariables(Collections.singletonMap("url", baseUrl))
-                .build();
-
-        List<?> result = webClient.get()
-                .uri("?ibanAccount={iban}", iban)
-                .retrieve()
-                .bodyToFlux(Object.class)
-                .collectList()
-                .block();
-
-        log.info("Result: " + result);
-
-        return result;
-    }
 
     public long create(Customer model) {
         CustomerEntity entity = mapToEntity(model);
@@ -102,7 +80,7 @@ public class CustomerService {
         if (StringUtils.hasLength(entity.getIban())) {
 
             entity.setTransactions(
-                    getTransactionsByCustomerIBAN(entity.getIban())
+                    transactionService.getTransactionsByCustomerIBAN(entity.getIban())
             );
 
         }

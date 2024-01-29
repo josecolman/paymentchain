@@ -9,6 +9,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -73,9 +74,12 @@ public class ProductService implements IProductService{
                 connection.addHandlerLast(new WriteTimeoutHandler(10, TimeUnit. SECONDS));
             });
 
+    @Value("${product.service.url}")
+    private String productServiceUrl;
+
     public String getProductByIdByHttp(long id) {
 
-        String baseUrl = "http://product-service/api/v1/product";
+        String baseUrl = productServiceUrl + "/api/v1/product";
 
         // baseUrl = "http://localhost:8999/api/v1/product";
 

@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
 
-@FeignClient(name="product-service", url = "${product.service.url}", fallback = ProductServiceClientFallback.class)
+@FeignClient(name="product-service",
+        //url = "${product.service.url}",
+        fallback = ProductServiceClientFallback.class)
 public interface ProductServiceClient {
 
     @GetMapping("/api/v1/product/{id}")
