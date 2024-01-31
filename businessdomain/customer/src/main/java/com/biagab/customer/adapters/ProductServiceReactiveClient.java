@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 //import reactivefeign.spring.config.ReactiveFeignClient;
 import reactor.core.publisher.Mono;
-
+/*
 //https://github.com/PlaytikaOSS/feign-reactive
-@Component
+//@Component
 //@ReactiveFeignClient(name = "product-service-reactive", url = "http://localhost:8999")
-@FeignClient(name = "product-service-reactive", url = "http://localhost:8999")
+@FeignClient(name="product-service-reactive", value = "product-service-reactive")
 //spring-cloud-starter-openfeign
 //@Headers({ "Accept: application/json" })
 public interface ProductServiceReactiveClient {
@@ -39,4 +39,4 @@ public interface ProductServiceReactiveClient {
     //@RequestLine("POST /icecream/bills/pay")
     //@Headers("Content-Type: application/json")
     //Mono<Void> payBill(Publisher<Bill> bill);
-}
+}*/

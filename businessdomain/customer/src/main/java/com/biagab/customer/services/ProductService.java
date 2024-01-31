@@ -1,7 +1,7 @@
 package com.biagab.customer.services;
 
 import com.biagab.customer.adapters.ProductServiceClient;
-import com.biagab.customer.adapters.ProductServiceReactiveClient;
+//import com.biagab.customer.adapters.ProductServiceReactiveClient;
 import com.biagab.customer.models.Product;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.netty.channel.ChannelOption;
@@ -10,6 +10,7 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,18 +27,19 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@RefreshScope
 public class ProductService implements IProductService{
 
     //import org.springframework.web.reactive.function.client.WebClient;
     //@LoadBalanced
     private final WebClient.Builder webClientBuilder;
     private final ProductServiceClient productServiceClient;
-    private final ProductServiceReactiveClient productServiceReactiveClient;
+    /*private final ProductServiceReactiveClient productServiceReactiveClient;
 
     @Bean
     public ProductServiceReactiveClient productServiceClient() {
         return null; // No es necesario crear una instancia aquí, Feign lo manejará.
-    }
+    }*/
 
     /*
     //Create instance of your API
@@ -58,8 +60,8 @@ public class ProductService implements IProductService{
                     //Java11ReactiveFeign //Java 11 http client based
                     .<ProductServiceReactiveClient>builder()
                     .target(ProductServiceReactiveClient.class, "http://localhost:8999");*/
-
-    private final ProductServiceReactiveClient reactiveClient;
+/*
+    private final ProductServiceReactiveClient reactiveClient;*/
 
     HttpClient httpClient = HttpClient.create()
             //.wiretap(true)

@@ -1,36 +1,35 @@
-package com.biagab.customer.services;
+package com.biagab.customer.adapters;
 
-import com.biagab.customer.adapters.TransactionServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
 @RefreshScope
-public class TransactionService implements ITransactionService {
+public class TransactionServiceClient {
 
-    private final TransactionServiceClient transactionServiceClient;
-
-    @Override
-    public List<?> getTransactionsByCustomerIBAN(String iban) {
-        return transactionServiceClient.getTransactionsByCustomerIBAN(iban);
-    }
-
-    /*@Value("${transaction.service.url}")
+    @Value("${transaction.service.url}")
     private String transactionServiceUrl;
 
+    private final WebClient.Builder webClientBuilder;
+    private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 
     @Bean
     public WebClient webClient() {
 
         String baseUrl = transactionServiceUrl + "/api/v1/transaction";
 
-        return loadBalancedWebClientBuilder()
+        return webClientBuilder
                 .baseUrl(baseUrl)
                 .filter(lbFunction)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -38,11 +37,8 @@ public class TransactionService implements ITransactionService {
                 .build();
     }
 
-    private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
-
     public List<?> getTransactionsByCustomerIBAN(String iban) {
 
-        //List<?> result = webClient.get()
         List<?> result = webClient().get()
                 .uri("?ibanAccount={iban}", iban)
                 .retrieve()
@@ -53,6 +49,6 @@ public class TransactionService implements ITransactionService {
         log.info("Result: " + result);
 
         return result;
-    }*/
+    }
 
 }

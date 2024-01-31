@@ -40,7 +40,7 @@ public class TransactionService {
 
     public List<Transaction> list(String ibanAccount) {
         return transactionRepository
-                .findAll()
+                .findByIbanAccount(ibanAccount)
                 .stream()
                 .map(this::mapToModel)
                 .collect(Collectors.toList());

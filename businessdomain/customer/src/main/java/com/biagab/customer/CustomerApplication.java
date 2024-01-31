@@ -1,9 +1,11 @@
 package com.biagab.customer;
 
+import com.biagab.customer.configs.SecurityConfig;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -20,7 +22,7 @@ import reactivefeign.spring.config.EnableReactiveFeignClients;
 				description = "Rest api for Customer management."
 		)
 )
-@SpringBootApplication
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)//se excluye porque vamos crear nuestra propia configuracion
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableReactiveFeignClients

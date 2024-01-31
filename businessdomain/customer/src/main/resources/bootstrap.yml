@@ -1,19 +1,20 @@
 #file: noinspection SpellCheckingInspection
 ## YAML Template.
-#app:
-#  env: dev
+app:
+  env: dev
 springdoc:
-  swagger-ui: #path: /swagger/index.html
+  swagger-ui:
+    #path: /swagger/index.html
     enabled: true
 server:
-  port: 8999
+  port: 8998
 eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
 spring:
-  application:
-    name: product-service
+  application: #name: businessdomain-customer
+    name: customer-service
   cloud:
     config:
       discovery:
@@ -22,17 +23,26 @@ spring:
       failFast: true
       #name of base properties config file, before profile
       name: config-client
-      profile: production
+      profile: development
       #label: latest
       username: admin
       password: qwerty
       retry:
         max-attempts: 1
         max-interval: 1000
-      bus:
-        enabled: true
-        trace:
-          enabled: true
-      kafka:
-        bootstrap-servers: #- kafka:9092
-          - localhost:9092
+    kafka:
+      bootstrap-servers: ${KAFKA_SERVER:localhost:9092}
+  security: # TODO remove this section
+    user:
+      name: admin
+      password: qwerty
+      roles: ADMIN
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+      

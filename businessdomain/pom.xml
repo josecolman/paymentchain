@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.biagab</groupId>
         <artifactId>paymentchain</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <groupId>com.biagab.businessdomain</groupId>
     <artifactId>businessdomain</artifactId>
@@ -96,6 +96,23 @@
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <!-- bootstrap.yml config for spring cloud config -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+            <!--<version>4.1.0</version>-->
         </dependency>
 
     </dependencies>

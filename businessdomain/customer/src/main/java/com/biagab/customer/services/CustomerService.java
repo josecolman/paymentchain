@@ -14,7 +14,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@RefreshScope
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -40,7 +43,9 @@ public class CustomerService {
    // private final WebClient.Builder webClientBuilder;
 
     private final IProductService productService;
-    private final TransactionService transactionService;
+    private final ITransactionService transactionService;
+
+
 
     /*HttpClient httpClient = HttpClient.create()
             //.wiretap(true)

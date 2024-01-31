@@ -1,0 +1,34 @@
+server:
+  port: 8994
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      enabled: true
+      server:
+        git:
+          uri: ${LOCAL_REPOSITORY:/Users/jose/Documents/udemy/payment_chain/config-server-repo}
+          default-label: main
+          git-clone-on-start: true
+  security:
+    user:
+      name: admin
+      password: qwerty
+  bus:
+    enabled: true
+    trace:
+      enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:9092}
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

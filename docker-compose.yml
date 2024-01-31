@@ -1,0 +1,170 @@
+#file: noinspection SpellCheckingInspection
+#see for java tunning https://docs.oracle.com/cd/E15523_01/web.1111/e13814/jvm_tuning.htm#PERFM161
+version: '3.8'
+services: #Docker Compose creates a virtual network between the services and the DNS name
+  #used for each service is its name: that’s why it’s possible to use eureka-discovery as the hostname.
+  registry-discovery:
+    container_name: id-eureka
+    image: paymentchain/microservice-docker-eurekaserver:1.0.0
+    ports:
+      - "8761:8761"
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+
+  ##########################################################################
+  #configuration service
+  ##########################################################################
+  configuration:
+    container_name: id-config
+    image: paymentchain/microservice-docker-configserver:1.0.0
+    volumes: #this it use because we are using a local github repository /host/path:/container/path use ./ for relative path
+      - /Users/jose/Documents/udemy/payment_chain/config-server-repo:/tmp/config-server-repo
+      #All projets will have a variable value  DEUREKA_SERVER this tell where find a registry-discovery server
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+        -DLOCAL_REPOSITORY=/tmp/config-server-repo
+      #-Dspring.cloud.config.server.native.searchLocations=/var/config-data
+    depends_on:
+      - registry-discovery
+    ports:
+      - "8762:8994"
+
+  ##########################################################################
+  #administration service
+  ##########################################################################
+  administration:
+    container_name: id-admin
+    image: paymentchain/microservice-docker-adminserver:1.0.0
+    #All projets will have a variable value  DEUREKA_SERVER this tell where find a registry-discovery server
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+      #-Dspring.cloud.config.server.native.searchLocations=/var/config-data
+    depends_on:
+      - registry-discovery
+    ports:
+      - "8763:9083"
+
+  ##########################################################################
+  #product service
+  ##########################################################################
+  product-catalog:
+    container_name: bd-product-catalog
+    image: paymentchain/microservice-docker-product:1.0.0
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+    depends_on:
+      - registry-discovery
+      - configuration
+    ports:
+      - "8764:8999"
+
+  ##########################################################################
+  #customer service
+  ##########################################################################
+  customer:
+    container_name: bd-customer
+    image: paymentchain/microservice-docker-customer:1.0.0
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+        -Dspring.profiles.active=production
+    depends_on:
+      - registry-discovery
+      - configuration
+    ports:
+      - "8765:8998"
+
+  ##########################################################################
+  #transaction service
+  ##########################################################################
+  transaction:
+    container_name: bd-transaction
+    image: paymentchain/microservice-docker-transaction:1.0.0
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+        -Dspring.profiles.active=development
+    depends_on:
+      - registry-discovery
+      - configuration
+    ports:
+      - "8766:8997"
+
+  ##########################################################################
+  #database service
+  ##########################################################################
+  postgres_db:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "8767:5432"
+    volumes: #allow *.sql, *.sql.gz, or *.sh and is executed only if data directory is empty
+      - ./dbfiles:/docker-entrypoint-initdb.d
+      #- /var/lib/postgres_data:/var/lib/postgresql/data
+      - ./dbfiles/postgres_data:/var/lib/postgresql/data
+    #command: [ "chmod", "+x", "/docker-entrypoint-initdb.d/init-user-db.sh" ]
+    environment: #default postgres super user
+      POSTGRES_USER: postgres
+      #default passwor for postgres superuser, it is only the required envvar for postgres image
+      POSTGRES_PASSWORD: qwerty
+      #main database if name is not specific thname of superuser is use
+      POSTGRES_DB: postgres
+
+  ##########################################################################
+  #pgadmin service
+  ##########################################################################
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "qwerty"
+    ports:
+      - "8768:80"
+    depends_on:
+      - postgres_db
+  ##########################################################################
+  #kafka service
+  ##########################################################################
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "8769:2181"
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:8769
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,EXTERNAL://localhost:29092
+      KAFKA_LISTENERS: PLAINTEXT://:9092,EXTERNAL://:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+networks:
+  default:
+    external:
+      name: payment-chain-network
+
+
+
