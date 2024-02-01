@@ -21,9 +21,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private static final String[] ALLOWED_PATHS = {
-            "/v2/api-docs",             // Documentación de la API
-            "/swagger-resources/**",    // Recursos de Swagger
-            "/swagger-ui/**",           // Interfaz de usuario de Swagger
+            //"/v2/api-docs",             // Documentación de la API
+            //"/swagger-resources/**",    // Recursos de Swagger
+            //"/swagger-ui/**",           // Interfaz de usuario de Swagger
             "/actuator/**",             // Endpoints de Actuator
             "/h2-console/**",           // Consola de H2
     };

@@ -76,10 +76,10 @@ public class ProductService implements IProductService{
                 connection.addHandlerLast(new WriteTimeoutHandler(10, TimeUnit. SECONDS));
             });
 
-    @Value("${product.service.url}")
-    private String productServiceUrl;
+    //@Value("${product.service.url}")
+    //private String productServiceUrl;
 
-    public String getProductByIdByHttp(long id) {
+   /* public String getProductByIdByHttp(long id) {
 
         String baseUrl = productServiceUrl + "/api/v1/product";
 
@@ -111,13 +111,17 @@ public class ProductService implements IProductService{
         log.info("Product Name: " + productName);
         return productName;
 
-    }
+    }*/
 
     public String getProductByIdByFeign(long id){
         return productServiceClient.getProductById(id);
     }
 
-    public String getProductById(long id){
+    public String getProductById(long id) {
+        return productServiceClient.getProductById(id);
+    }
+
+    public String getProductByIdw(long id) {
 
         /*productServiceClient.getProductFluxById(id)
                 .subscribe(product -> {

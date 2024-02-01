@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customer-service
+          uri: lb://customer-service
+          predicates:
+            #- Path=/customer/**
+            - Path=/**
+            #- Path=/api/customer/**
+          #filters:
+            #- RewritePath=/api/customer/(?<path>.*), /$\{path}
+        - id: transaction-service
+          uri: lb://transaction-service
+          predicates:
+            - Path=/api/transaction/**
+          filters:
+            - RewritePath=/api/transaction/(?<path>.*), /$\{path}
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/product/(?<path>.*), /$\{path}
+#        - id: gateway-service
+#          uri: lb://gateway-service
+#          predicates:
+#            - Path=/**
+#          filters:
+#            - RewritePath=/, /$\{path}

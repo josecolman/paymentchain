@@ -2,20 +2,32 @@
 ## YAML Template.
 app:
   env: dev
-springdoc:
-  swagger-ui: #path: /swagger/index.html
-    enabled: true
-server:
-  port: 8997
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
+    #lease-renewal-interval-in-seconds: 10
+    #lease-expiration-duration-in-seconds: 30
+    #health-check-url-path: /actuator/health
+  client: #registry-fetch-interval-seconds: 5
     serviceUrl:
       defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+
 spring:
+  boot:
+    admin:
+      client:
+        username: admin
+        password: qwerty
+
+  security:
+    user:
+      name: admin
+      password: qwerty
+
+
   application:
-    name: transaction-service
+    name: keycloak-service
   cloud:
     config:
       discovery:
@@ -31,6 +43,10 @@ spring:
       retry:
         max-attempts: 1
         max-interval: 1000
+    security:
+      user:
+        name: admin
+        password: qwerty
     bus:
       enabled: true
       trace:

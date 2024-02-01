@@ -1,9 +1,5 @@
 package com.biagab.customer.models;
 
-import com.biagab.customer.entities.CustomerProductEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 import java.util.List;

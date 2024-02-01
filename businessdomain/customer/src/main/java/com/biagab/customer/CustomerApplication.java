@@ -25,7 +25,7 @@ import reactivefeign.spring.config.EnableReactiveFeignClients;
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)//se excluye porque vamos crear nuestra propia configuracion
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableReactiveFeignClients
+//@EnableReactiveFeignClients
 public class CustomerApplication {
 
 	public static void main(String[] args) {

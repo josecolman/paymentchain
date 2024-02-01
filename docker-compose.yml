@@ -161,10 +161,64 @@ services: #Docker Compose creates a virtual network between the services and the
     ports:
       - "9092:9092"
       - "29092:29092"
+  ##########################################################################
+  #gateway service
+  ##########################################################################
+  gateway:
+    container_name: gateway-service
+    image: paymentchain/gateway-service:1.0.0
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+        -Dspring.profiles.active=development
+    depends_on:
+      - registry-discovery
+      - configuration
+    ports:
+      - "8770:8995"
+  ##########################################################################
+  #keycloack Server
+  ##########################################################################
+  keycloak_server:
+    container_name: id-keycloakServer
+    image: jboss/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: H2
+    ports:
+      - 8771:8996
+  ##########################################################################
+  #keycloak service
+  ##########################################################################
+  keycloak:
+    container_name: keycloakAdapter
+    image: paymentchain/microservice-docker-keycloak-service:1.0.0
+    #All projets will have a variable value  DEUREKA_SERVER this tell where find a registry-discovery server
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+        -DKEYCLOACK_SERVER=http://keycloak_server:8771/auth/realms/
+        -DKEYCLOACK_REAL_ID=5pzY9Px9dJFUtHDTQHLKrggQidd4p1IbEfSM6e8aZwY
+      #-Dspring.cloud.config.server.native.searchLocations=/var/config-data
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8772:8993
+###########
+#resources
+###########
 networks:
-  default:
-    external:
-      name: payment-chain-network
+  payment-chain-network:
+    external: true
+    name: payment-chain-network
+
+
 
 
 

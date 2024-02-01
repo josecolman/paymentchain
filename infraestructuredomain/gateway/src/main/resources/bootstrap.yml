@@ -2,11 +2,14 @@
 ## YAML Template.
 app:
   env: dev
-springdoc:
-  swagger-ui: #path: /swagger/index.html
-    enabled: true
+
+logging:
+  level: #org.springframework.cloud.gateway.filter: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
 server:
-  port: 8997
+  port: 8995
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
@@ -15,7 +18,7 @@ eureka:
       defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
 spring:
   application:
-    name: transaction-service
+    name: gateway-service
   cloud:
     config:
       discovery:
@@ -37,13 +40,11 @@ spring:
         enabled: true
     kafka:
       bootstrap-servers: ${KAFKA_SERVER:localhost:9092}
-
 management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
   endpoint:
     health:
       show-details: ALWAYS
-
-endpoints:
-  web:
-    exposure:
-      include: "*"
