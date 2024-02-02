@@ -1,6 +1,7 @@
 package com.biagab.product.services;
 
 import com.biagab.product.entities.ProductEntity;
+import com.biagab.product.mappers.ProductMapper;
 import com.biagab.product.models.Product;
 import com.biagab.product.repositories.ProductRepository;
 import com.biagab.product.utils.ValidationException;
@@ -8,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,13 +23,15 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @SneakyThrows
     public long create(Product model) {
 
         validate(model);
 
-        ProductEntity entity = mapToEntity(model);
+        //ProductEntity entity = mapToEntity(model);
+        ProductEntity entity = productMapper.dtoToEntity(model);
 
         return productRepository.save(entity).getId();
     }
@@ -45,7 +49,8 @@ public class ProductService {
 
     public Product read(long id) {
         ProductEntity entity = productRepository.findById(id).orElse(null);
-        return mapToModel(entity);
+        //return mapToModel(entity);
+        return productMapper.entityToDTO(entity);
     }
 
     @SneakyThrows
@@ -66,11 +71,12 @@ public class ProductService {
         return productRepository
                 .findAll()
                 .stream()
-                .map(this::mapToModel)
+                //.map(this::mapToModel)
+                .map(productMapper::entityToDTO)
                 .collect(Collectors.toList());
     }
 
-    public ProductEntity mapToEntity(Product model) {
+   /* public ProductEntity mapToEntity(Product model) {
         if (model == null)
             return null;
         ProductEntity entity = new ProductEntity();
@@ -84,6 +90,6 @@ public class ProductService {
         Product model = new Product();
         BeanUtils.copyProperties(entity, model);
         return model;
-    }
+    }*/
 
 }
